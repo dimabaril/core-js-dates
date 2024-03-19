@@ -1,32 +1,19 @@
-function getWorkSchedule(period, countWorkDays, countOffDays) {
-  const startDate = new Date(period.start.split('-').reverse().join('-'));
-  const endDate = new Date(period.end.split('-').reverse().join('-'));
-  const result = [];
-  const currentDate = new Date(startDate);
-  let isWorkDay = true;
+function getWeekNumberByDate(date) {
+  const startOfTheYear = new Date(date.getFullYear(), 0, 1);
+  const dayOfYear = Math.ceil((date - startOfTheYear) / 86400000) + 1;
 
-  while (currentDate <= endDate) {
-    if (isWorkDay) {
-      for (let i = 0; i < countWorkDays; i += 1) {
-        if (currentDate <= endDate) {
-          result.push(
-            `${currentDate.getDate().toString().padStart(2, '0')}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getFullYear()}`
-          );
-          currentDate.setDate(currentDate.getDate() + 1);
-        }
-      }
-      isWorkDay = false;
-    } else {
-      for (let i = 0; i < countOffDays; i += 1) {
-        if (currentDate <= endDate) {
-          currentDate.setDate(currentDate.getDate() + 1);
-        }
-      }
-      isWorkDay = true;
-    }
-  }
+  let dayOfWeek = startOfTheYear.getDay();
+  dayOfWeek = dayOfWeek !== 0 ? 7 : dayOfWeek;
 
-  return result;
+  const days = dayOfYear + 7 - dayOfWeek;
+
+  return Math.ceil(days / 7);
 }
 
-console.log(getWorkSchedule({ start: '01-01-2024', end: '15-01-2024' }, 1, 3)); // ["1-1-2021", "2-1-2021", "4-1-2021", "5-1-2021", "7-1-2021", "8-1-2021", "10-1-2021"]
+console.log(getWeekNumberByDate(new Date(2024, 0, 3))); // 1
+console.log();
+console.log(getWeekNumberByDate(new Date(2024, 0, 31))); // 5
+console.log();
+console.log(getWeekNumberByDate(new Date(2024, 1, 23))); // 8
+console.log();
+console.log(getWeekNumberByDate(new Date(2023, 1, 23))); // 9
